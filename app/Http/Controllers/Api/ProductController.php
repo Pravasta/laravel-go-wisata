@@ -27,23 +27,23 @@ class ProductController extends Controller
             'name' => 'required',
             'price' => 'required',
             'stock' => 'required',
-            'image' => 'required',
-            'status' => 'required',
+            // 'image' => 'required',
+            // 'status' => 'required',
             'criteria' => 'required',
-            'favorite' => 'required',
+            // 'favorite' => 'required',
         ]);
 
         // insertImage
         $product = new Product;
         $product->category_id = $request->category_id;
         $product->name = $request->name;
-        $product->description = $request->description;
+        $product->description = '';
         $product->price = $request->price;
-        $product->stock = $request->stock;
+        $product->stock = 0;
 
-        $product->status = $request->status;
+        $product->status = 'published';
         $product->criteria = $request->criteria;
-        $product->favorite = $request->favorite;
+        $product->favorite = false;
         $product->save();
 
         if ($request->file('image')) {
@@ -52,6 +52,8 @@ class ProductController extends Controller
             $product->image = 'products/' . $product->id . '.' . $image->extension();
             $product->save();
         }
+
+        $product = Product::with('category')->find($product->id);
 
         return response([
             'status' => 'success',
@@ -88,22 +90,24 @@ class ProductController extends Controller
             ], 404);
         }
 
-        $product->category_id = $request->category_id;
+        // $product->category_id = $request->category_id;
         $product->name = $request->name;
-        $product->description = $request->description;
+        // $product->description = $request->description;
         $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->status = $request->status;
-        $product->criteria = $request->criteria;
-        $product->favorite = $request->favorite;
+        // $product->stock = $request->stock;
+        // $product->status = $request->status;
+        // $product->criteria = $request->criteria;
+        // $product->favorite = $request->favorite;
         $product->save();
 
-        if ($request->image) {
-            $image = $request->file('image');
-            $image->storeAs('public/products', $product->id . '.' . $image->extension());
-            $product->image = 'products/' . $product->id . '.' . $image->extension();
-            $product->save();
-        }
+        // if ($request->image) {
+        //     $image = $request->file('image');
+        //     $image->storeAs('public/products', $product->id . '.' . $image->extension());
+        //     $product->image = 'products/' . $product->id . '.' . $image->extension();
+        //     $product->save();
+        // }
+
+        $product = Product::with('category')->find($product->id);
 
         return response([
             'status' => 'success',
